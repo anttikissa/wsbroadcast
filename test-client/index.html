@@ -1,11 +1,13 @@
 <!doctype html>
 <style>
 	body {
-		white-space: pre-line;
 		font-family: monospace;
 	}
 	* {
 		font-size: 14px;
+	}
+	p {
+		margin: 0;
 	}
 	input {
 		font-family: monospace;
@@ -13,6 +15,7 @@
 		padding: 5px;
 		border: 1px solid #bbb;
 		margin-bottom: 5px;
+		display: block;
 	}
 	input:focus {
 		outline: none;
@@ -28,30 +31,43 @@
 
 		const SERVER = 'ws://localhost:7777/'
 
+		let path = new URLSearchParams(location.search).get('path')
+		if (path) {
+			if (path.startsWith('/')) {
+				path.replace('/', '')
+			}
+			var url = SERVER + path
+		} else {
+			var url = SERVER
+		}
+
 		let ws
 		let opened = false
 		function open(silent = false) {
 			if (ws) {
 				return
 			}
+
+			!silent && print(`*** Connecting to ${url}`)
+
 			// print('*** Creating WS object')
-			ws = new WebSocket(SERVER)
+			ws = new WebSocket(url)
 
 			ws.onopen = x => {
-				print('*** WebSocket opened')
+				print('*** Connected')
 				opened = true
 			}
 
 			ws.onclose = x => {
 				if (opened) {
-					print('*** WebSocket closed')
+					print('*** Disconnected')
 				}
 				ws = null
 				opened = false
 			}
 
 			ws.onerror = err => {
-				!silent && print(`*** Error opening WebSocket at ${SERVER}`)
+				!silent && print(`*** Could not connect to ${url}`)
 			}
 
 			ws.onmessage = msg => {
@@ -71,8 +87,9 @@
 		function print(...args) {
 			log(...args)
 			let message = args.join(' ')
-			const textNode = document.createTextNode(message + '\n')
-			document.body.appendChild(textNode)
+			const node = document.createElement('p')
+			node.textContent = message
+			document.body.appendChild(node)
 		}
 
 		function send(message) {
