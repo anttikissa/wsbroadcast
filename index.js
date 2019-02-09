@@ -1,6 +1,6 @@
 const ws = require('ws')
 
-const port = 7777
+const port = Number(process.env.WSBROADCAST_PORT) || 7777
 
 let server = new ws.Server({
     port
