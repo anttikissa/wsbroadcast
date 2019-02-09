@@ -29,9 +29,8 @@
 
 		// WebSocket code
 
-
 		let params = new URLSearchParams(location.search)
-		let port = params.get('port' || 7777)
+		let port = params.get('port') || 7777
 		var server = `ws://localhost:${port}/`
 
 		let path = params.get('path')
