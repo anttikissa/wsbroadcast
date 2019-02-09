@@ -5,6 +5,10 @@ The only dependency is `ws` to keep it as minimal as possible.
 
 Use for experimental games, chat applications, etc.
 
+Supports "rooms": clients connected to the same URL, such as
+ws://localhost:7777/game9283, only see clients that connected to the
+same url.
+
 Usage:
 
 ./run
