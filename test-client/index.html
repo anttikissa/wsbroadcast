@@ -29,16 +29,19 @@
 
 		// WebSocket code
 
-		const SERVER = 'ws://localhost:7777/'
 
-		let path = new URLSearchParams(location.search).get('path')
+		let params = new URLSearchParams(location.search)
+		let port = params.get('port' || 7777)
+		var server = `ws://localhost:${port}/`
+
+		let path = params.get('path')
 		if (path) {
 			if (path.startsWith('/')) {
 				path.replace('/', '')
 			}
-			var url = SERVER + path
+			var url = server + path
 		} else {
-			var url = SERVER
+			var url = server
 		}
 
 		let ws
