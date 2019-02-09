@@ -12,6 +12,7 @@
 		width: 50%;
 		padding: 5px;
 		border: 1px solid #bbb;
+		margin-bottom: 5px;
 	}
 	input:focus {
 		outline: none;
@@ -23,24 +24,47 @@
 			console.log(...args)
 		}
 
-		// Websocket code
+		// WebSocket code
 
 		const SERVER = 'ws://localhost:7777/'
-		let ws = new WebSocket(SERVER)
-		ws.onopen = x => {
-			print('*** Websocket opened')
+
+		let ws
+		let opened = false
+		function open(silent = false) {
+			if (ws) {
+				return
+			}
+			// print('*** Creating WS object')
+			ws = new WebSocket(SERVER)
+
+			ws.onopen = x => {
+				print('*** WebSocket opened')
+				opened = true
+			}
+
+			ws.onclose = x => {
+				if (opened) {
+					print('*** WebSocket closed')
+				}
+				ws = null
+				opened = false
+			}
+
+			ws.onerror = err => {
+				!silent && print(`*** Error opening WebSocket at ${SERVER}`)
+			}
+
+			ws.onmessage = msg => {
+				print('<= ' + msg.data)
+			}
 		}
 
-		ws.onclose = x => {
-			print('*** Websocket closed')
-		}
-		ws.onerror = err => {
-			print(`*** Error opening websocket at ${SERVER}`)
-		}
-
-		ws.onmessage = msg => {
-			print('<= ' + msg.data)
-		}
+		open()
+		setInterval(() => {
+			if (!ws) {
+				open(true)
+			}
+		}, 100)
 
 		// UI code
 
@@ -62,12 +86,13 @@
 
 		input.onkeypress = (value) => {
 			if (value.key === 'Enter') {
+				if (!opened) {
+					return print('*** Server is offline')
+				}
 				send(input.value)
 				input.value = ''
 			}
 		}
 
 		input.focus()
-
-	</script>
-</body>
+</script></body>
