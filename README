@@ -9,3 +9,7 @@ Usage:
 
 ./run
 
+If you want to run in a different port,
+
+WSBROADCAST_PORT=1234 ./run
+
