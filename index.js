@@ -22,7 +22,7 @@ server.on('connection', (client) => {
     clients.push(client)
 
     client.on('message', (message) => {
-        log(`${client._id} ${message}`)
+        log(`<${client._id}> ${message}`)
         for (let c of clients) {
             if (c !== client) {
                 c.send(message)
