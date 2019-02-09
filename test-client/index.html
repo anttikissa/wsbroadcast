@@ -1,0 +1,73 @@
+<!doctype html>
+<style>
+	body {
+		white-space: pre-line;
+		font-family: monospace;
+	}
+	* {
+		font-size: 14px;
+	}
+	input {
+		font-family: monospace;
+		width: 50%;
+		padding: 5px;
+		border: 1px solid #bbb;
+	}
+	input:focus {
+		outline: none;
+		border: 1px solid black;
+	}
+</style>
+<body><input id=input placeholder="Write message here"><script>
+		function log(...args) {
+			console.log(...args)
+		}
+
+		// Websocket code
+
+		const SERVER = 'ws://localhost:7777/'
+		let ws = new WebSocket(SERVER)
+		ws.onopen = x => {
+			print('*** Websocket opened')
+		}
+
+		ws.onclose = x => {
+			print('*** Websocket closed')
+		}
+		ws.onerror = err => {
+			print(`*** Error opening websocket at ${SERVER}`)
+		}
+
+		ws.onmessage = msg => {
+			print('<= ' + msg.data)
+		}
+
+		// UI code
+
+		function print(...args) {
+			log(...args)
+			let message = args.join(' ')
+			const textNode = document.createTextNode(message + '\n')
+			document.body.appendChild(textNode)
+		}
+
+		function send(message) {
+			print('=> ' + message)
+			ws.send(message)
+		}
+
+		function receive(message) {
+			console.log('receive', message)
+		}
+
+		input.onkeypress = (value) => {
+			if (value.key === 'Enter') {
+				send(input.value)
+				input.value = ''
+			}
+		}
+
+		input.focus()
+
+	</script>
+</body>

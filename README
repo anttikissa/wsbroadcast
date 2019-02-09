@@ -1,0 +1,11 @@
+An extremely simple websocket server that broadcasts all messages it
+receives to all clients.
+
+The only dependency is `ws` to keep it as minimal as possible.
+
+Use for experimental games, chat applications, etc.
+
+Usage:
+
+./run
+
